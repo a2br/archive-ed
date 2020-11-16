@@ -1,5 +1,5 @@
 # archive-ed
-Archive les notes afin de les sauvegarder à travers les années
+Archive les notes afin de les sauvegarder à travers les années (en YAML)
 
 ## Installation
 ```console
