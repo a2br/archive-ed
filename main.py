@@ -83,14 +83,11 @@ def format_notes(notes_response, account):
                     "date": cible['date']
                 }
                 try:
-                    print(cible['valeur'], cible['noteSur'])
                     cibleObj['valeur'] = (locale.atof(cible['valeur']) / locale.atof(cible['noteSur']))
                     cibleObj['classe'] = (float(cible['moyenneClasse']) / locale.atof(cible['noteSur']))
                 except:
                     cibleObj['valeur'] = cible['valeur']
                     cibleObj['classe'] = cible['moyenneClasse']
-
-
                 matiereObj['notes'].append(cibleObj)
             periodeObj['matieres'].append(matiereObj)
 
@@ -105,13 +102,17 @@ def write_data(year_object, account):
     file = []
     if os.path.isfile(file_path):
         with open(file_path) as raw_file:
-            opened = yaml.load(raw_file)
+            opened = yaml.load(raw_file, Loader=yaml.FullLoader)
             if isinstance(opened, list):
                 file = opened
     # Détermine l'emplacement de l'item à changer
-    itemToChange = next(filter(
-        lambda annee: annee['anneeScolaire'] == year_object['anneeScolaire'] and annee['classe'] == year_object[
-            'classe'], file), None)
+    itemToChange = None
+    try:
+        itemToChange = next(filter(
+            lambda annee: annee['anneeScolaire'] == year_object['anneeScolaire'] and annee['classe'] == year_object[
+                'classe'], file), None)
+    except KeyError:
+        pass
     # Edite le fichier
     if itemToChange:
         indexToChange = file.index(itemToChange)
@@ -122,25 +123,34 @@ def write_data(year_object, account):
     # Ecrit le fichier
     with open(file_path, 'w') as writeStream:
         writeStream.write(yaml.dump(file, indent=4))
+    return file_path
 
 
 def main():
     username = console.input("Identifiant: ")
     password = console.input("Mot de passe: ", password=True)
-    fs_init()
+    print("Connexion...")
     login_response, token = ed.login(username, password)
     if not token:
         print(login_response['message'])
         calm_exit()
+    print("Initialisation du fs...")
+    fs_init()
     account = select_account(login_response['data']['accounts'])
     print(f"[blue]Bonjour, [bold]{account['prenom']}[/].[/]")
     # Fetch and handle notes
+    print("Récupération des notes...")
     notes_response, token = ed.fetch_notes(account, token)
     if not notes_response['data']:
         print(notes_response['message'])
         calm_exit()
+    print("Reformatage...")
     formatted = format_notes(notes_response, account)
-    write_data(formatted, account)
+    print("Sauvegarde...")
+    outputPath = write_data(formatted, account)
+    # Conclusion
+    print("[reverse green]Terminé[/]")
+    print(f"Vérifiez vos information dans '{outputPath}'")
 
 
 if __name__ == '__main__':
