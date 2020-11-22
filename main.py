@@ -133,10 +133,9 @@ def main():
     if not token:
         print(login_response['message'])
         calm_exit()
-    print("Initialisation du fs...")
-    fs_init()
     account = select_account(login_response['data']['accounts'])
     print(f"[blue]Bonjour, [bold]{account['prenom']}[/].[/]")
+    fs_init()
     # Fetch and handle notes
     print("Récupération des notes...")
     notes_response, token = ed.fetch_notes(account, token)
@@ -148,7 +147,7 @@ def main():
     print("Sauvegarde...")
     outputPath = write_data(formatted, account)
     # Conclusion
-    print("[reverse green]Terminé[/]")
+    print(f"[reverse green]Terminé[/] Les informations sur votre année scolaire {account['anneeScolaireCourante']} ont bien été mises à jour.")
     print(f"Vérifiez vos informations dans '{outputPath}'")
 
 
