@@ -1,11 +1,10 @@
 import os
-import yaml
+import json
 import locale
 from rich import print
 from rich.console import Console
 
 import ecoledirecte as ed
-
 
 console = Console()
 locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
@@ -96,13 +95,13 @@ def format_notes(notes_response, account):
 
 
 def write_data(year_object, account):
-    file_path = f"data/{account['id']}.yml"
+    file_path = f"data/{account['id']}.json"
 
     # Récupère le fichier existant, ou en crée un nouveau
     file = []
     if os.path.isfile(file_path):
         with open(file_path) as raw_file:
-            opened = yaml.load(raw_file, Loader=yaml.FullLoader)
+            opened = json.load(raw_file)
             if isinstance(opened, list):
                 file = opened
     # Détermine l'emplacement de l'item à changer
@@ -121,8 +120,8 @@ def write_data(year_object, account):
         file.append(year_object)
 
     # Ecrit le fichier
-    with open(file_path, 'w') as writeStream:
-        writeStream.write(yaml.dump(file, indent=4))
+    with open(file_path, 'w') as outfile:
+        json.dump(file, outfile, indent=4)
     return file_path
 
 
@@ -150,7 +149,7 @@ def main():
     outputPath = write_data(formatted, account)
     # Conclusion
     print("[reverse green]Terminé[/]")
-    print(f"Vérifiez vos information dans '{outputPath}'")
+    print(f"Vérifiez vos informations dans '{outputPath}'")
 
 
 if __name__ == '__main__':
