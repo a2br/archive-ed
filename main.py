@@ -69,6 +69,7 @@ def format_notes(notes_response, account):
                 "nom": matiere['discipline'],
                 "code": matiere['codeMatiere'],
                 "coef": matiere['coef'],
+                "rang": matiere['rang'],
                 "notes": []
             }
             notes_cible = list(filter(
