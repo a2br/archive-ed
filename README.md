@@ -1,5 +1,8 @@
 # archive-ed
-Archive les notes afin de les sauvegarder à travers les années (en YAML)
+
+> :warning: Le développement est mis sur pause. Le projet peut très clairement être amélioré. N'hésitez pas à proposer vos PR.
+
+Archive les notes afin de les sauvegarder à travers les années (en JSON)
 
 ## Installation
 ```console
